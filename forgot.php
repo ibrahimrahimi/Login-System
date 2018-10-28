@@ -15,7 +15,8 @@
     include('config.php');
 
     include('functions.php');
-
+    $message = '';
+    $text = '';
 ?>
 
 <!DOCTYPE html>
@@ -28,22 +29,20 @@
     <?php 
         if(isset($_POST['submit'])){
             $email = protect($_POST['email']);
-            $username = protect($_POST['username']);
-            
             if(!$email){
-                echo "<center> You need to fill in your <b>E-mail</b> address! </center>";
+                $message = "<center> You need to fill in your <b>E-mail</b> address! </center>";
             }else{
                 $checkemail = "/^[a-z0-9]+([_\\.-][a-z0-9]+)*@([a-z0-9]+([\.-][a-z0-9]+)*)+\\.[a-z]{2,}$/i";
 
                 if(!preg_match($checkemail, $email)){
-                    echo "<center> <br>E-mail</b> is not valid, must be name@server.tld!";
+                    $message = "<center> <br>E-mail</b> is not valid, must be name@server.tld!";
                 }else{
 
                     $res = mysqli_query($link, "SELECT * FROM `users` WHERE `email` = '".$email."'");
                     $num = mysqli_num_rows($res);
 
                     if($num == 0){
-                        echo "<center> The <b>E-mail</b> you supplied does not exist in database!</center>";
+                        $message = "<center> The <b>E-mail</b> you supplied does not exist in database!</center>";
                     }else{
                         $row = mysqli_fetch_assoc($res);
                         if($row){
@@ -51,7 +50,7 @@
                                 //Set mail sender 
                                 $mail->setFrom('noreply@google.co.uk', 'System Admin');
                                 //Set reciever 
-                                $mail->addAddress($email, $username);
+                                $mail->addAddress($email);
                                 //Set E-mail subject
                                 $mail->Subject = 'Forgetten Password';
                                 //Set E-mail body
@@ -67,7 +66,7 @@
 
                                 $mail->send();
 
-                                echo "<center> An e-mail has been sent to your email address containing your password</center>";
+                                $text = "<center> An e-mail has been sent to your email address containing your password.</center>";
 
                             }catch(Exception $e){
                                 echo $e->errorMessage();
@@ -80,22 +79,31 @@
             }
         }
     ?>
-
-    <div id = "border">
+    <div class="warring">
+        <?php if($message) {?><h3 style="color: red;"><?= $message ?></h3><?php } ?>
+        <?php if($text) {?><h3 style="color: green;"><?= $text ?></h3><?php } ?>
+    </div>    
+    </div>
+    <div class="login" id = "forgotForm">
         <form action="forgot.php" method="post">
             <table cellpadding="2" cellspacing="0" border="0">
                 <tr>
-                    <td>Email:</td>
-                    <td><input type="text" name="email"/></td>
+                    <td align="center">
+                        <h1>Forgot Password</h1>
+                    </td>
                 </tr>
                 <tr>
-                    <td colspan="2" align="center"><input type="submit" name="submit" value="Send"/></td>
+                    <td><input placeholder="E-mail" type="text" name="email"/></td>
                 </tr>
                 <tr>
-                    <td colspan="2" align="center"><a href="register.php">Register</a> | <a href="login.php">Login</a></td>
+                    <td><input type="submit" name="submit" value="Send" id="send"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center"><a href="register.php" class="link">Register</a> | <a href="login.php" class="link">Login</a></td>
                 </tr>
             </table>
         </form>
     </div>
+    <div class="shadow"></div>
 </body>
 </html>

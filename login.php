@@ -10,16 +10,18 @@
     include('config.php');
     //Include out functions file giving us access to the protect() function made earlier
     include('functions.php');
-
+    $message = "";
+    $text = '';
 ?>
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Login With Users</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css"  href="style.css" />
-    <script src="main.js"></script>
+    <script src="script.js"></script>
+    <script>
+        
+    </script>
 </head>
 <body>
  <?php 
@@ -31,7 +33,7 @@
            //Check if the username or password boxes were not filled in
            if(!$username || !$password){
                //If not display an error message.
-               echo "<center> You need to fil in a <b> Username</b> and <b> Password</b>!</center>";
+               $message = "<center>You need to fill in a <b> Username</b> and <b> Password</b>!</center>";
            }else{
                // If there was a match continue checking
 
@@ -41,7 +43,7 @@
                // Check if there was not any match
                if($num == 0){
                     //If not display en error message
-                    echo "<center> The <b> Username</b> you suplied does not exist!</center>";
+                    $message = "<center>The <b> Username</b> you suplied does not exist!</center>";
                }else{
                    //If there was continue checking
                    //select all rows where the username and password match the ones submitted by the user
@@ -52,7 +54,7 @@
                    //check if there was not a match
                    if($num == 0){
                        //if not display error
-                       echo "<center>The <b>Password</b> you suplied does not match the one for that username!</center>";
+                       $message = "<center>The <b>Password</b> you suplied does not match the one for that username!</center>";
                    }else{
                        //If there was continue 
                        //split all fields from the correct row into an associative array.
@@ -60,7 +62,7 @@
                        //check to see if the user has not activated their account yet.
                        if($row['active'] != 1){
                            //If not display error message
-                           echo "<center> You have not yet <b> activated</b> your account</center>";
+                           $message = "<center>You have not yet <b>activated</b> your account</center>";
                         }else{
 
                             //If they have log them in
@@ -68,7 +70,7 @@
                             $_SESSION['uid'] = $row['id'];
 
                             //show message
-                            echo "<center> You have successfully logged in!</center>";
+                            $text = "<center> You have successfully logged in!</center>";
 
                             //update the online field up to 50 seconds into the future
 
@@ -83,6 +85,10 @@
         }
     ?> 
     <form method="post" action="login.php">
+        <div class="warring">
+            <?php if ($message) {?><h3 style="color: red;"><?= $message ?></h3><?php } ?>
+            <?php if($text) {?><h3 style="color: green;"><?= $text ?></h3><?php } ?>
+        </div>
         <div class="login" id="login">
             <table>
                 <tr>
@@ -91,21 +97,21 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><input placeholder="Username" type="text" name="username"/></td>
+                    <td><input placeholder="Username" type="text" name="username" id="username"/></td>
                 </tr>
                 <tr>
-                    <td><input placeholder="Password" type="password" name="password"/></td>
+                    <td><input placeholder="Password" type="password" name="password" class="password"/></td>
                 </tr>
                 <tr>
-                    <td colspan="2" align="center"><input type="submit" 
-                    name="submit" value="login"/></td>
+                    <td id="tdShow"><input type="checkbox" onclick="showPass()"/><lable id="showpass">Show Password</lable></td>
+                    <td><input type="submit" name="submit" value="login" id="submit"/></td>  
                 </tr>
                 <tr>
-                <td colspan="2" align="center"><a href="register.php">Resigter</a> |
-                 <a href="forgot.php">Forget Pass</a></td>
+                <td colspan="2" align="center" ><a href="register.php" class="link">Resigter</a> |
+                 <a href="forgot.php" class="link">Forget Pass</a></td>
                 </tr>
             </table>
-        </div>
+        </div><div class="shadow"></div>
     </form>      
 </body>
 </html>
